@@ -5,14 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Elysians Set Generator</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
+      color: #ffffff;
       text-align: center;
-      background: radial-gradient(ellipse at bottom, #0d1b2a 0%, #000 100%);
+      overflow-x: hidden;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at bottom, #0d1b2a 0%, #000000 100%);
+      position: relative;
     }
+
+    .stars, .stars2, .stars3 {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      animation: moveStars 180s linear infinite;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .stars {
+      background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1500&q=80');
+      opacity: 0.5;
+    }
+
+    .stars2 {
+      background-image: url('https://images.unsplash.com/photo-1477201389074-1863f668fac6?auto=format&fit=crop&w=1500&q=80');
+      animation-duration: 240s;
+      opacity: 0.3;
+    }
+
+    .stars3 {
+      background-image: url('https://images.unsplash.com/photo-1600369672803-0e1f3063c4c2?auto=format&fit=crop&w=1500&q=80');
+      animation-duration: 300s;
+      opacity: 0.25;
+    }
+
+    @keyframes moveStars {
+      from { transform: translateY(0); }
+      to { transform: translateY(-1000px); }
+    }
+
     .container {
+      position: relative;
+      z-index: 2;
       max-width: 600px;
       margin: auto;
       padding: 40px 20px;
@@ -21,42 +64,91 @@
       box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
       backdrop-filter: blur(5px);
     }
-    input, select, button {
-      font-size: 1rem;
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 10px;
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    input, select {
       width: 100%;
-      background: #101c2e;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
       border: none;
-      color: #fff;
+      margin-bottom: 15px;
+      background: #101c2e;
+      color: #ffffff;
       box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.2);
     }
+
     button {
       background-color: #00ffff;
       border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
       cursor: pointer;
       color: black;
-      box-shadow: 0 0 10px #00ffff;
+      margin: 10px 8px 0;
       transition: 0.3s;
+      box-shadow: 0 0 10px #00ffff;
     }
+
     button:hover {
       background-color: #00c7c7;
     }
+
     .output {
-      white-space: pre-wrap;
       margin-top: 20px;
-      background: rgba(0,0,0,0.5);
+      text-align: left;
+      white-space: pre-wrap;
+      background: rgba(0, 0, 0, 0.5);
       padding: 15px;
       border-radius: 10px;
       max-height: 300px;
       overflow-y: auto;
+      box-shadow: inset 0 0 10px rgba(0,255,255,0.1);
+    }
+
+    .footer {
+      margin-top: 30px;
+    }
+
+    a.discord-button {
+      display: inline-block;
+      background-color: #7289da;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin-top: 10px;
+      box-shadow: 0 0 10px #7289da;
+      transition: 0.3s;
+    }
+
+    a.discord-button:hover {
+      background-color: #5b6eae;
     }
   </style>
 </head>
 <body>
+  <div class="stars"></div>
+  <div class="stars2"></div>
+  <div class="stars3"></div>
+
   <div class="container">
     <h1>Elysians Set Generator</h1>
+
     <label for="pingInput">Your Ping (ms):</label>
     <input type="number" id="pingInput" placeholder="e.g. 75" />
 
@@ -75,42 +167,36 @@
     <button onclick="download()">Download .txt</button>
 
     <div class="output" id="outputBox">Your generated sets will appear here.</div>
+
+    <div class="footer">
+      <a class="discord-button" href="https://discord.gg/vSUK57aAJn" target="_blank">Join Discord</a>
+    </div>
   </div>
 
   <script>
-    function getTailLengthByPing(ping) {
-      if (ping <= 40) return 14;
-      if (ping <= 80) return 12;
-      if (ping <= 120) return 10;
-      return 8;
-    }
-
-    function generateJumpOffset(ping, game) {
+    function generateJumpOffset(game) {
       if (["arhood", "yenohood"].includes(game)) {
-        // Offset between -0.08 and 0.04
-        let min = -0.08;
-        let max = 0.04;
-        let val = Math.random() * (max - min) + min;
-        return val.toFixed(2);
-      } else {
+        return Math.random() < 0.04
+          ? (Math.random() * (0.05 - 0.0001) + 0.0001).toFixed(5)
+          : (Math.random() * (0.99 - 0.75) + 0.75).toFixed(2);
+      } else if (["danffa", "hc"].includes(game)) {
         return (Math.random() * (0.45 - 0.01) + 0.01).toFixed(3);
+      } else {
+        return "0.000";
       }
     }
 
     function generateSet(ping, game) {
-      if (["arhood", "yenohood"].includes(game)) {
-        const tailLength = getTailLengthByPing(ping);
-        let variationRange = ping <= 60 ? 9 : ping <= 100 ? 6 : 3;
-        let tail = '';
-        for (let i = 0; i < tailLength; i++) {
-          tail += Math.floor(Math.random() * variationRange);
-        }
-        return '0.1' + tail;
-      } else {
+      if (["danffa", "hc"].includes(game)) {
         const low = Math.max(1, Math.min(9, Math.floor(ping / 10)));
         const a = Math.floor(Math.random() * low);
         const b = Math.floor(Math.random() * low);
         return `0.0${a}${b}`;
+      } else {
+        const base = Math.random() * (0.19 - 0.13) + 0.13;
+        const tailLength = Math.floor(Math.random() * 5) + 7;
+        const tail = Array.from({ length: tailLength }, () => Math.floor(Math.random() * 10)).join('');
+        return base.toFixed(6) + tail;
       }
     }
 
@@ -125,17 +211,27 @@
         return;
       }
 
-      const results = [];
-      const seen = new Set();
+      let results = [];
+      const setSet = new Set();
+      const offsetSet = new Set();
 
       for (let i = 0; i < amount; i++) {
-        let set, offset, attempt = 0;
+        let set;
+        let attempts = 0;
         do {
           set = generateSet(ping, game);
-          offset = generateJumpOffset(ping, game);
-          attempt++;
-        } while (seen.has(set + '|' + offset) && attempt < 50);
-        seen.add(set + '|' + offset);
+          attempts++;
+        } while (setSet.has(set) && attempts < 50);
+        setSet.add(set);
+
+        let offset;
+        attempts = 0;
+        do {
+          offset = generateJumpOffset(game);
+          attempts++;
+        } while (offsetSet.has(offset) && attempts < 50);
+        offsetSet.add(offset);
+
         results.push(`Set ${i + 1}: ${set} | Offset: ${offset}`);
       }
 
@@ -146,10 +242,12 @@
       const output = document.getElementById('outputBox').textContent;
       if (!output || output.startsWith("Invalid")) return;
       const blob = new Blob([output], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
+      a.href = url;
       a.download = 'elysians sets.txt';
       a.click();
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
