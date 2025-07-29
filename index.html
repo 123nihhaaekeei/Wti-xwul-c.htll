@@ -87,18 +87,10 @@
 
     function generateJumpOffset(ping, game) {
       if (["arhood", "yenohood"].includes(game)) {
-        let baseMin, baseMax;
-        if (ping <= 40) {
-          baseMin = 0.06; baseMax = 0.26;
-        } else if (ping <= 80) {
-          baseMin = 0.04; baseMax = 0.16;
-        } else if (ping <= 120) {
-          baseMin = 0.03; baseMax = 0.12;
-        } else {
-          baseMin = 0.02; baseMax = 0.08;
-        }
-        let val = Math.random() * (baseMax - baseMin) + baseMin;
-        val = Math.random() < 0.5 ? val : -val;
+        // Offset between -0.08 and 0.04
+        let min = -0.08;
+        let max = 0.04;
+        let val = Math.random() * (max - min) + min;
         return val.toFixed(2);
       } else {
         return (Math.random() * (0.45 - 0.01) + 0.01).toFixed(3);
@@ -156,7 +148,7 @@
       const blob = new Blob([output], { type: 'text/plain' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'elysians_sets.txt';
+      a.download = 'elysians sets.txt';
       a.click();
     }
   </script>
